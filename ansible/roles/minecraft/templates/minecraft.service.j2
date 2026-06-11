@@ -1,0 +1,18 @@
+[Unit]
+Description=Minecraft server (Docker Compose)
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/minecraft
+ExecStart=/usr/bin/docker compose up -d
+# "down" with a long timeout so the itzg image can send "stop" and the world
+# saves before the container is killed. This is what the Part 1 setup got wrong.
+ExecStop=/usr/bin/docker compose down --timeout 90
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target

@@ -43,6 +43,23 @@ Terraform reads those on its own. They expire when the lab session ends, so re-c
 
 ### High-level Overview
 
+```
+ your machine                          AWS (Learner Lab, us-east-1)
+ ------------                          ----------------------------
+
+ make deploy
+   |
+   |-- terraform apply  ---->  security group (ports 22 + 25565)
+   |                           key pair + EC2 instance (Ubuntu 24.04, t3.medium)
+   |                           writes the public IP into ansible/inventory.ini
+   |
+   '-- ansible-playbook ---->  install Docker
+                               run itzg/minecraft-server (docker compose + systemd)
+                               wait for port 25565
+
+ make verify  ---->  nmap: 25565/tcp open  minecraft  CS 312 Minecraft Server
+```
+
 The steps in order:
 
 1. Terraform creates the security group, uploads the SSH public key, and launches the instance.
@@ -99,10 +116,10 @@ To actually play, open Minecraft: Java Edition, go to **Multiplayer -> Add Serve
 The container runs with `restart: unless-stopped` and the `systemd` unit is enabled, so if the instance reboots the server comes back on its own. You can test that without SSH:
 
 ```
-aws ec2 reboot-instances --instance-ids $(terraform -chdir=terraform output -raw instance_id)
+make reboot
 ```
 
-Wait a minute, then run the `nmap` again and it'll still be open.
+Wait a minute, then run `make verify` again and it'll still be open.
 
 ### Shutting down properly
 

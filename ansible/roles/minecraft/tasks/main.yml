@@ -1,0 +1,40 @@
+---
+- name: Create the server directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - /opt/minecraft
+    - /opt/minecraft/data
+
+- name: Write the docker-compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: /opt/minecraft/docker-compose.yml
+    mode: "0644"
+  notify: Restart minecraft
+
+- name: Install the systemd unit
+  ansible.builtin.template:
+    src: minecraft.service.j2
+    dest: /etc/systemd/system/minecraft.service
+    mode: "0644"
+  notify: Restart minecraft
+
+- name: Enable the service so it comes back after a reboot
+  ansible.builtin.systemd:
+    name: minecraft
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Apply any pending restart before we health-check
+  ansible.builtin.meta: flush_handlers
+
+- name: Wait for the server to accept connections on 25565
+  ansible.builtin.wait_for:
+    host: 127.0.0.1
+    port: 25565
+    timeout: 300
+    delay: 20

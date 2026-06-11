@@ -1,0 +1,3 @@
+# Copy to terraform.tfvars and lock SSH to your own IP for a local-only run.
+# Leave it out (or 0.0.0.0/0) if you want the GitHub Actions pipeline to work.
+ssh_ingress_cidr = "1.2.3.4/32"

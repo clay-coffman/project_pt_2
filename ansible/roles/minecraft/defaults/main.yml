@@ -1,0 +1,9 @@
+---
+# "LATEST" pulls the current release. Pin a real version (e.g. "1.21.4") if you
+# want it fixed.
+minecraft_version: "LATEST"
+
+# RCON never leaves the container (it's not published in the compose file). It's
+# only here so the itzg image can send a clean "stop" on shutdown. Change it if
+# you like.
+rcon_password: "cs312rcon"

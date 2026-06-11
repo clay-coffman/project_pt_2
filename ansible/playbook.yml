@@ -1,0 +1,17 @@
+---
+- name: Set up the Minecraft server
+  hosts: minecraft
+  become: true
+  gather_facts: false
+  pre_tasks:
+    - name: Wait for the instance to accept SSH
+      ansible.builtin.wait_for_connection:
+        timeout: 180
+      become: false
+    - name: Wait for cloud-init to finish (avoids racing apt on first boot)
+      ansible.builtin.command: cloud-init status --wait
+      changed_when: false
+      failed_when: false
+  roles:
+    - docker
+    - minecraft

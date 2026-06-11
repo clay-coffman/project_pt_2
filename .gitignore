@@ -1,0 +1,16 @@
+# keys / secrets
+*.pem
+keys/minecraft-key
+
+# terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# ansible
+ansible/inventory.ini
+
+# course materials, not part of this deliverable
+/instructions.md
+/part_1/
