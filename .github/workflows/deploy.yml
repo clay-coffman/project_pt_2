@@ -38,10 +38,10 @@ jobs:
 
       - name: Write the SSH key and inventory
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           install -m 600 /dev/null ansible/minecraft-key.pem
-          printf '%s' "$SSH_PRIVATE_KEY" > ansible/minecraft-key.pem
+          echo "$SSH_PRIVATE_KEY_B64" | base64 -d > ansible/minecraft-key.pem
           cat > ansible/inventory.ini <<EOF
           [minecraft]
           ${{ steps.tf.outputs.ip }} ansible_user=ubuntu ansible_ssh_private_key_file=minecraft-key.pem

@@ -135,7 +135,7 @@ Because the unit is ordered `After=docker.service`, systemd stops Minecraft (and
 `.github/workflows/deploy.yml` runs the same Terraform + Ansible on every push to `main` (there's also a `destroy.yml` you trigger by hand). Since Learner Lab credentials are temporary, set them as repository secrets and refresh them each session:
 
 - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN` from the same AWS Details panel.
-- `SSH_PRIVATE_KEY`, the contents of `keys/minecraft-key`.
+- `SSH_PRIVATE_KEY`, the base64 of the private key: `base64 < keys/minecraft-key | gh secret set SSH_PRIVATE_KEY` (base64 keeps the key from getting mangled in transit).
 
 If the secrets have expired, the run fails at the AWS step. That's expected; just re-paste them.
 
